@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>С Днем Рождения, моя Любовь!</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #ff9ecb, #ffd3e1);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+            position: relative;
+            z-index: 20;
+        }
+        
+        h1 {
+            color: #d64161;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .subtitle {
+            color: #888;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+        
+        .cake-container {
+            position: relative;
+            height: 300px;
+            margin: 30px 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+        }
+        
+        .cake {
+            position: relative;
+            width: 200px;
+            height: 200px;
+        }
+        
+        .cake-layer {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 10px 10px 5px 5px;
+            transition: all 0.8s ease;
+            opacity: 0;
+        }
+        
+        .cake-base {
+            width: 180px;
+            height: 60px;
+            background: #f8c5c5;
+            bottom: 0;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .cake-middle {
+            width: 150px;
+            height: 50px;
+            background: #ff9ecb;
+            bottom: 60px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .cake-top {
+            width: 120px;
+            height: 40px;
+            background: #f8c5c5;
+            bottom: 110px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .candle {
+            position: absolute;
+            bottom: 150px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 8px;
+            height: 30px;
+            background: #fff;
+            border-radius: 5px;
+            z-index: 10;
+            opacity: 0;
+            transition: opacity 0.5s ease 3s;
+        }
+        
+        .flame {
+            position: absolute;
+            bottom: 180px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 15px;
+            height: 25px;
+            background: #ff9d00;
+            border-radius: 50% 50% 20% 20%;
+            animation: flicker 1s infinite alternate;
+            box-shadow: 0 0 15px #ff9d00, 0 0 10px #ff9d00;
+            opacity: 0;
+            transition: opacity 0.5s ease 3.5s;
+        }
+        
+        @keyframes flicker {
+            0%, 100% {
+                transform: translateX(-50%) scale(1);
+            }
+            50% {
+                transform: translateX(-50%) scale(1.1);
+            }
+        }
+        
+        .controls {
+            margin: 20px 0;
+            position: relative;
+            z-index: 30;
+        }
+        
+        button {
+            background: #d64161;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(214, 65, 97, 0.3);
+            position: relative;
+            z-index: 30;
+        }
+        
+        button:hover {
+            background: #ff6b8b;
+            transform: translateY(-2px);
+        }
+        
+        .message {
+            margin-top: 30px;
+            color: #666;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            min-height: 150px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .typed-text {
+            display: inline;
+        }
+        
+        .cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1.2rem;
+            background-color: #d64161;
+            margin-left: 2px;
+            animation: blink 1s infinite;
+            vertical-align: middle;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        
+        .hearts {
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            color: #ff6b6b;
+            opacity: 0;
+            animation: float 6s ease-in infinite;
+            pointer-events: none;
+        }
+        
+        @keyframes float {
+            0% {
+                opacity: 0;
+                transform: translateY(100vh) rotate(0deg);
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-100px) rotate(360deg);
+            }
+        }
+
+        .confetti-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 15;
+        }
+        
+        .confetti-piece {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            opacity: 0;
+            animation: confetti-fall 3s linear forwards;
+        }
+        
+        @keyframes confetti-fall {
+            0% {
+                opacity: 1;
+                transform: translateY(-50px) rotate(0deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(400px) rotate(720deg);
+            }
+        }
+        
+        /* Адаптивность для мобильных устройств */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+            
+            .cake {
+                transform: scale(0.9);
+            }
+            
+            .cake-container {
+                height: 250px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.7rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .cake {
+                transform: scale(0.8);
+            }
+            
+            .cake-container {
+                height: 220px;
+            }
+            
+            .message {
+                font-size: 1rem;
+            }
+            
+            button {
+                padding: 10px 20px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const Cake = ({ animate }) => {
+            const [layersVisible, setLayersVisible] = useState([false, false, false]);
+            const [showConfetti, setShowConfetti] = useState(false);
+            
+            useEffect(() => {
+                if (animate) {
+                    // Анимация появления слоев с задержкой
+                    const timer1 = setTimeout(() => {
+                        setLayersVisible([true, false, false]);
+                    }, 500);
+                    
+                    const timer2 = setTimeout(() => {
+                        setLayersVisible([true, true, false]);
+                    }, 1500);
+                    
+                    const timer3 = setTimeout(() => {
+                        setLayersVisible([true, true, true]);
+                    }, 2500);
+                    
+                    // Конфетти появляются через 1 секунду после свечи
+                    const timer4 = setTimeout(() => {
+                        setShowConfetti(true);
+                    }, 4000);
+                    
+                    // Автоматически скрываем конфетти через 3 секунды
+                    const timer5 = setTimeout(() => {
+                        setShowConfetti(false);
+                    }, 7000);
+
+                    return () => {
+                        clearTimeout(timer1);
+                        clearTimeout(timer2);
+                        clearTimeout(timer3);
+                        clearTimeout(timer4);
+                        clearTimeout(timer5);
+                    };
+                } else {
+                    setLayersVisible([false, false, false]);
+                    setShowConfetti(false);
+                }
+            }, [animate]);
+            
+            return (
+                <div className="cake">
+                    <div 
+                        className="cake-layer cake-base" 
+                        style={{ 
+                            opacity: layersVisible[0] ? 1 : 0,
+                            transform: layersVisible[0] ? 'translateX(-50%)' : 'translate(-50%, 100px)'
+                        }}
+                    ></div>
+                    <div 
+                        className="cake-layer cake-middle" 
+                        style={{ 
+                            opacity: layersVisible[1] ? 1 : 0,
+                            transform: layersVisible[1] ? 'translateX(-50%)' : 'translate(-50%, 100px)'
+                        }}
+                    ></div>
+                    <div 
+                        className="cake-layer cake-top" 
+                        style={{ 
+                            opacity: layersVisible[2] ? 1 : 0,
+                            transform: layersVisible[2] ? 'translateX(-50%)' : 'translate(-50%, 100px)'
+                        }}
+                    ></div>
+                    
+                    <div 
+                        className="candle" 
+                        style={{ opacity: layersVisible[2] ? 1 : 0 }}
+                    ></div>
+                    <div 
+                        className="flame" 
+                        style={{ opacity: layersVisible[2] ? 1 : 0 }}
+                    ></div>
+                    
+                    {/* Конфетти внутри белого блока */}
+                    {showConfetti && <Confetti />}
+                </div>
+            );
+        };
+
+        const TypingMessage = ({ animate }) => {
+            const [displayedText, setDisplayedText] = useState("");
+            const fullText = "В этот особенный день я хочу пожелать тебе бесконечного счастья, крепкого здоровья и исполнения всех самых заветных желаний! Пусть каждый твой день будет наполнен радостью, любовью и теплом!";
+            
+            useEffect(() => {
+                if (animate) {
+                    let currentIndex = 0;
+                    const typingInterval = setInterval(() => {
+                        if (currentIndex <= fullText.length) {
+                            setDisplayedText(fullText.slice(0, currentIndex));
+                            currentIndex++;
+                        } else {
+                            clearInterval(typingInterval);
+                        }
+                    }, 40); // Скорость печати - 40ms на символ
+                    
+                    return () => clearInterval(typingInterval);
+                } else {
+                    setDisplayedText("");
+                }
+            }, [animate, fullText]);
+            
+            return (
+                <div className="message">
+                    <span className="typed-text">{displayedText}</span>
+                    <span className="cursor"></span>
+                </div>
+            );
+        };
+
+        const HeartsBackground = () => {
+            const [hearts, setHearts] = useState([]);
+            
+            useEffect(() => {
+                const generateHearts = () => {
+                    const newHearts = [];
+                    for (let i = 0; i < 25; i++) {
+                        newHearts.push({
+                            id: i,
+                            left: Math.random() * 100,
+                            delay: Math.random() * 5,
+                            size: Math.random() * 15 + 10
+                        });
+                    }
+                    setHearts(newHearts);
+                };
+                
+                generateHearts();
+            }, []);
+            
+            return (
+                <div className="hearts">
+                    {hearts.map(heart => (
+                        <div 
+                            key={heart.id} 
+                            className="heart"
+                            style={{
+                                left: `${heart.left}%`,
+                                animationDelay: `${heart.delay}s`,
+                                fontSize: `${heart.size}px`
+                            }}
+                        >
+                            ❤
+                        </div>
+                    ))}
+                </div>
+            );
+        };
+
+        const Confetti = () => {
+            const [pieces, setPieces] = useState([]);
+            
+            useEffect(() => {
+                const generateConfetti = () => {
+                    const newPieces = [];
+                    const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#f9c74f', '#ff6b6b', '#ff6b6b'];
+                    
+                    for (let i = 0; i < 30; i++) {
+                        newPieces.push({
+                            id: i,
+                            left: Math.random() * 100,
+                            delay: Math.random() * 1.5,
+                            color: colors[Math.floor(Math.random() * colors.length)],
+                            size: Math.random() * 8 + 5
+                        });
+                    }
+                    setPieces(newPieces);
+                };
+                
+                generateConfetti();
+            }, []);
+            
+            return (
+                <div className="confetti-container">
+                    {pieces.map(piece => (
+                        <div 
+                            key={piece.id} 
+                            className="confetti-piece"
+                            style={{
+                                left: `${piece.left}%`,
+                                animationDelay: `${piece.delay}s`,
+                                backgroundColor: piece.color,
+                                width: `${piece.size}px`,
+                                height: `${piece.size}px`
+                            }}
+                        ></div>
+                    ))}
+                </div>
+            );
+        };
+
+        const BirthdayCard = () => {
+            const [animationStarted, setAnimationStarted] = useState(false);
+            
+            const startAnimation = () => {
+                setAnimationStarted(true);
+            };
+            
+            return (
+                <>
+                    <HeartsBackground />
+                    <div className="container">
+                        <h1>Happy Birthday my Love!</h1>
+                        <div className="subtitle">Самому special человеку в моей жизни ❤</div>
+                        
+                        <div className="cake-container">
+                            <Cake animate={animationStarted} />
+                        </div>
+                        
+                        <div className="controls">
+                            {!animationStarted && (
+                                <button onClick={startAnimation}>Собрать торт</button>
+                            )}
+                        </div>
+                        
+                        <TypingMessage animate={animationStarted} />
+                    </div>
+                </>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<BirthdayCard />);
+    </script>
+</body>
+</html>
